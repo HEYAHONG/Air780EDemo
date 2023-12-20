@@ -6,6 +6,8 @@
 #include "net_lwip.h"
 #include "luat_mem.h"
 #include "luat_uart.h"
+#include "FreeRTOS.h"
+#include "task.h"
 #include "main.h"
 
 
@@ -13,6 +15,11 @@
 void main_task_sleep(uint32_t timeout_ms)
 {
     luat_rtos_task_sleep(timeout_ms);
+}
+
+uint32_t main_task_gettick_ms()
+{
+    return xTaskGetTickCount() * (1000/configTICK_RATE_HZ);
 }
 
 void * main_malloc(size_t bytes)
@@ -25,13 +32,18 @@ void main_free(void *ptr)
     luat_heap_free(ptr);
 }
 
+void main_meminfo(size_t *total,size_t *used,size_t *max_used)
+{
+    luat_meminfo_sys(total,used,max_used);
+}
+
 int main_debug_print(const char * fmt,...)
 {
     va_list ap;
     va_start(ap, fmt);
-    int ret=soc_vsprintf(0, fmt, ap);
+    soc_vsprintf(0, fmt, ap);
     va_end(ap);
-    return ret;
+    return 0;
 }
 
 static luat_rtos_task_handle main_task_handle;

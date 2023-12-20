@@ -27,6 +27,11 @@ pause
 goto :eof
 :CheckXMakeOk
 
+@rem RC资源更新
+PUSHD "%APP_ROOT_PATH%\rc" 2> nul > nul
+fsgen.exe fs RC_fs.c
+POPD 2> nul > nul
+
 @rem 给SDK打补丁(替换一些文件)
 COPY /Y  "%APP_ROOT_PATH%\sdk_patch\ec618_0h00_flash.c"    "%APP_ROOT_PATH%\sdk\PLAT\core\ld\ec618_0h00_flash.c"
 

@@ -5,6 +5,7 @@ local LIB_NAME = "lib" .. TARGET_NAME .. ".a "
 includes(SDK_TOP.."/luatos_lwip_socket")
 includes(SDK_TOP.."/thirdparty/libhttp")
 includes(SDK_TOP .. "/thirdparty/libemqtt")
+includes(SDK_TOP .. "../rc")
 
 target(TARGET_NAME)
     set_kind("static")
@@ -15,6 +16,7 @@ target(TARGET_NAME)
     add_files("./*.c",{public = true})
     add_files("./*.cpp",{public = true})
 
+    add_deps("RC") --加入MQTT支持
     add_deps("luatos_lwip_socket") --socket依赖
     add_deps("libhttp") --加入HTTP客户端支持，自动加载了socket依赖
     add_deps("libemqtt") --加入MQTT支持

@@ -1,5 +1,6 @@
 #include "main.h"
 #include "RC.h"
+#include "time.h"
 
 static void displaymeminfo()
 {
@@ -12,16 +13,22 @@ static char * global=new char[30];
 
 void main_task(void *param)
 {
-    main_debug_print("main start!");
-
+    main_add_event(NULL,[](void *,heventloop_t*)
     {
-        //打印banner
-        char * banner=(char *)RCGetHandle("banner");
-        if(banner!=NULL)
-            main_debug_print("\r\n%s\r\n",banner);
-    }
+        main_debug_print("main start!");
 
-    displaymeminfo();
+        {
+            //打印banner
+            char * banner=(char *)RCGetHandle("banner");
+            if(banner!=NULL)
+                main_debug_print("\r\n%s\r\n",banner);
+        }
+
+        //打印IMEI
+        main_debug_print("IMEI:%s",main_get_imei());
+
+        displaymeminfo();
+    },NULL);
 
     uint32_t main_loop_print_tick_ms=main_task_gettick_ms();
     while(true)
@@ -40,9 +47,14 @@ void main_task(void *param)
         if(main_task_gettick_ms()-main_loop_print_tick_ms > 60000)
         {
             main_loop_print_tick_ms=main_task_gettick_ms();
-            main_debug_print("main loop!");
+            time_t current_time=(uint32_t)time(NULL);
+            char timestr[50]={0};
+            {
+                const char * _timestr=asctime(localtime(&current_time));
+                memcpy(timestr,_timestr,strlen(_timestr)-1);
+            }
+            main_debug_print("main loop,tick=%" PRIu32 ",time=%s!",main_task_gettick_ms(),timestr);
             displaymeminfo();
-
         }
 
         main_task_sleep(1);

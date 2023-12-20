@@ -6,6 +6,7 @@
 #include "net_lwip.h"
 #include "luat_mem.h"
 #include "luat_uart.h"
+#include "luat_mobile.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "main.h"
@@ -66,6 +67,16 @@ int main_debug_print(const char * fmt,...)
     soc_vsprintf(0, fmt, ap);
     va_end(ap);
     return 0;
+}
+
+const char *main_get_imei()
+{
+    static char imei[20]={0};
+    if(strlen(imei) < 10)
+    {
+        luat_mobile_get_imei(0, imei, sizeof(imei));
+    }
+    return imei;
 }
 
 static heventloop_t *main_loop=NULL;

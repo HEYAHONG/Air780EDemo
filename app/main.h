@@ -4,6 +4,7 @@
 #include "stdint.h"
 #include "stdlib.h"
 #include "inttypes.h"
+#include "string.h"
 
 #include "heventloop.h"
 #include "heventslots.h"
@@ -31,6 +32,8 @@ void main_free(void *ptr);
 void main_meminfo(size_t *total,size_t *used,size_t *max_used);
 
 int main_debug_print(const char * fmt,...);
+
+const char *main_get_imei();
 
 /** \brief 获取主事件循环
  *

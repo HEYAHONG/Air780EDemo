@@ -38,7 +38,7 @@ COPY /Y  "%APP_ROOT_PATH%\sdk_patch\ec618_0h00_flash.c"    "%APP_ROOT_PATH%\sdk\
 @rem 产生CMakeLists.txt(用于方便使用编辑器打开)构建工程
 PUSHD "%APP_ROOT_PATH%\sdk" 2> nul > nul
 xmake project -k cmake 2> nul > nul
-xmake -v
+xmake -w
 if NOT "X%ERRORLEVEL%" == "X0" PAUSE
 POPD 2> nul > nul
 

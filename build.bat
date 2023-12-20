@@ -42,11 +42,11 @@ POPD 2> nul > nul
 @rem 给SDK打补丁(替换一些文件)
 COPY /Y  "%APP_ROOT_PATH%\sdk_patch\ec618_0h00_flash.c"    "%APP_ROOT_PATH%\sdk\PLAT\core\ld\ec618_0h00_flash.c"
 
-@rem 产生CMakeLists.txt(用于方便使用编辑器打开)构建工程
+@rem 构建工程并产生CMakeLists.txt(用于方便使用编辑器打开)
 PUSHD "%APP_ROOT_PATH%\sdk" 2> nul > nul
-xmake project -k cmake 2> nul > nul
-xmake -w
+xmake -y -w
 if NOT "X%ERRORLEVEL%" == "X0" PAUSE
+xmake  project -k cmake
 POPD 2> nul > nul
 
 @rem 使用ping延时一段时间

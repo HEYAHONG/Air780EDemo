@@ -1,3 +1,6 @@
 [submodule "sdk"]
 	path = sdk
 	url = https://gitee.com/openLuat/luatos-soc-2022.git
+[submodule "hcppbox/HCppBox"]
+	path = hcppbox/HCppBox
+	url = https://gitee.com/HEYAHONG/HCppBox.git

@@ -17,6 +17,10 @@ void main_task_sleep(uint32_t timeout_ms);
 
 uint32_t main_task_gettick_ms(); /**< 获取当前tick(ms),只能在任务中调用 */
 
+void main_enter_critical();
+
+void main_exit_critical();
+
 void * main_malloc(size_t bytes);
 
 void main_free(void *ptr);

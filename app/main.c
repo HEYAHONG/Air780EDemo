@@ -22,6 +22,26 @@ uint32_t main_task_gettick_ms()
     return xTaskGetTickCount() * (1000/configTICK_RATE_HZ);
 }
 
+static int32_t critical_nested=0;
+static uint32_t critical_data=0;
+void main_enter_critical()
+{
+    if(critical_nested==0)
+    {
+        critical_data=luat_rtos_entry_critical();
+    }
+    critical_nested++;
+}
+
+void main_exit_critical()
+{
+    critical_nested--;
+    if(critical_nested==0)
+    {
+        critical_data=luat_rtos_entry_critical();
+    }
+}
+
 void * main_malloc(size_t bytes)
 {
     return luat_heap_malloc(bytes);

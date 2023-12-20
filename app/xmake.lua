@@ -6,6 +6,7 @@ includes(SDK_TOP.."/luatos_lwip_socket")
 includes(SDK_TOP.."/thirdparty/libhttp")
 includes(SDK_TOP .. "/thirdparty/libemqtt")
 includes(SDK_TOP .. "../rc")
+includes(SDK_TOP .. "../hcppbox")
 
 target(TARGET_NAME)
     set_kind("static")
@@ -17,6 +18,7 @@ target(TARGET_NAME)
     add_files("./*.cpp",{public = true})
 
     add_deps("RC") --加入RC支持
+        add_deps("HCppBox") --加入HCppBox支持
     add_deps("luatos_lwip_socket") --socket依赖
     add_deps("libhttp") --加入HTTP客户端支持，自动加载了socket依赖
     add_deps("libemqtt") --加入MQTT支持

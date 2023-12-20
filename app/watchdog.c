@@ -8,7 +8,7 @@
 
 static void sys_reset()
 {
-     ResetECSystemReset();
+    ResetECSystemReset();
     //若NVIC复位未实现，使用死循环通过硬件看门狗复位
     while(true)
     {

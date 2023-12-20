@@ -48,7 +48,7 @@ void main_task(void *param)
         {
             main_loop_print_tick_ms=main_task_gettick_ms();
             time_t current_time=(uint32_t)time(NULL);
-            char timestr[50]={0};
+            char timestr[50]= {0};
             {
                 const char * _timestr=asctime(localtime(&current_time));
                 memcpy(timestr,_timestr,strlen(_timestr)-1);

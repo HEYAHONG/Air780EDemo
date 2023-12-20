@@ -71,7 +71,7 @@ int main_debug_print(const char * fmt,...)
 
 const char *main_get_imei()
 {
-    static char imei[20]={0};
+    static char imei[20]= {0};
     if(strlen(imei) < 10)
     {
         luat_mobile_get_imei(0, imei, sizeof(imei));

@@ -1,8 +1,14 @@
 #include "main.h"
+#include "led.h"
 
 void main_task(void *param)
 {
     main_debug_print("main start!");
+
+    {
+        //初始化LED
+        led_init();
+    }
 
     while(true)
     {

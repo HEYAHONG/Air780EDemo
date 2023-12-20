@@ -9,6 +9,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "main.h"
+#include "led.h"
 
 
 
@@ -38,7 +39,7 @@ void main_exit_critical()
     critical_nested--;
     if(critical_nested==0)
     {
-        critical_data=luat_rtos_entry_critical();
+        luat_rtos_exit_critical(critical_data);
     }
 }
 
@@ -57,6 +58,7 @@ void main_meminfo(size_t *total,size_t *used,size_t *max_used)
     luat_meminfo_sys(total,used,max_used);
 }
 
+extern void soc_vsprintf(uint8_t no_print, const char *fmt, va_list ap);
 int main_debug_print(const char * fmt,...)
 {
     va_list ap;
@@ -66,15 +68,58 @@ int main_debug_print(const char * fmt,...)
     return 0;
 }
 
+static heventloop_t *main_loop=NULL;
+heventloop_t *main_get_eventloop()
+{
+    if(main_loop==NULL)
+    {
+        main_loop=heventloop_new(NULL);
+    }
+    return main_loop;
+}
+
+bool main_add_event(void *event_usr,void(*event_process)(void *,heventloop_t *),void(*event_onfree)(void *,heventloop_t *))
+{
+    return heventloop_add_event_ex1(main_get_eventloop(),event_usr,event_process,event_onfree);
+}
+
+static heventslots_t *main_loop_slot=NULL;
+heventslots_t *main_get_mainloop_slot()
+{
+    if(main_loop_slot==NULL)
+    {
+        main_loop_slot=heventslots_new(NULL);
+    }
+    return main_loop_slot;
+}
+
 static luat_rtos_task_handle main_task_handle;
 
-void main_init(void)
+/*
+在任务中处理的操作
+*/
+static void main_init_in_task(void*usr,heventloop_t*loop)
 {
 
-    main_debug_print("main init start!");
+    {
+        //初始化蜂窝网络
+        main_debug_print("init lwip!");
+        net_lwip_init();
+        net_lwip_register_adapter(NW_ADAPTER_INDEX_LWIP_GPRS);
+        network_register_set_default(NW_ADAPTER_INDEX_LWIP_GPRS);
+    }
+
+    {
+        //初始化LED
+        main_debug_print("init led!");
+        led_init();
+    }
+
+
 
     {
         //初始化C++
+        main_debug_print("init cpp environment!");
         typedef void(*pfunc)();
         extern pfunc __ctors_start__[];
         extern pfunc __ctors_end__[];
@@ -88,10 +133,15 @@ void main_init(void)
         }
     }
 
-    //初始化蜂窝网络
-    net_lwip_init();
-    net_lwip_register_adapter(NW_ADAPTER_INDEX_LWIP_GPRS);
-    network_register_set_default(NW_ADAPTER_INDEX_LWIP_GPRS);
+}
+
+static void main_init(void)
+{
+
+    main_debug_print("main init start!");
+
+    //将需要在任务中初始化的工作添加至主任务
+    main_add_event(NULL,main_init_in_task,NULL);
 
     //创建主任务
     luat_rtos_task_create(&main_task_handle,8192,10,"main",main_task,NULL,16);

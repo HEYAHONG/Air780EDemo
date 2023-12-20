@@ -16,7 +16,7 @@ target(TARGET_NAME)
     add_files("./*.c",{public = true})
     add_files("./*.cpp",{public = true})
 
-    add_deps("RC") --加入MQTT支持
+    add_deps("RC") --加入RC支持
     add_deps("luatos_lwip_socket") --socket依赖
     add_deps("libhttp") --加入HTTP客户端支持，自动加载了socket依赖
     add_deps("libemqtt") --加入MQTT支持

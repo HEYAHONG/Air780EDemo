@@ -21,7 +21,9 @@ target(TARGET_NAME)
     add_includedirs(SDK_TOP .. "/thirdparty/cJSON")
     add_files(SDK_TOP .. "/thirdparty/cJSON/**.c")
 
-
+    --添加jsoncpp
+    add_includedirs("./jsoncpp/include",{public = true})
+    add_files("./jsoncpp/src/lib_json/*.cpp",{public = true})
     add_deps("RC") --加入RC支持
     add_deps("HCppBox") --加入HCppBox支持
     add_deps("luatos_lwip_socket") --socket依赖

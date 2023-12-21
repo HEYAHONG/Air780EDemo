@@ -2,6 +2,9 @@
 #include "RC.h"
 #include "time.h"
 #include <string>
+#include <json/value.h>
+#include <json/reader.h>
+#include <json/writer.h>
 
 static void displaymeminfo()
 {
@@ -35,6 +38,34 @@ void main_task(void *param)
             if(luat_fs_info("/",&info)==0)
             {
                 main_debug_print("fsinfo:filesystem= %s ,type= %d ,total= %d bytes,free= %d bytes,block= %d bytes",info.filesystem,(int)info.type,(int)(info.total_block*info.block_size),(int)((info.total_block-info.block_used)*info.block_size),(int)info.block_size);
+            }
+        }
+
+        {
+            /*
+            加载资源文件中的app.json,保存一些常用信息
+            */
+            std::string app_json;
+            {
+                //加载RC中的资源文件
+                const char * temp=(const char *)RCGetHandle("app.json");
+                if(temp!=NULL)
+                {
+                    app_json=temp;
+                }
+            }
+
+            Json::Reader reader;
+            Json::Value json;
+            if(reader.parse(app_json,json))
+            {
+                {
+                    //将imei加入json
+                    json["imei"]=main_get_imei();
+                }
+                Json::StyledWriter writer;
+                std::string payload=writer.write(json);
+                main_debug_print("app.json config\n%s",payload.c_str());
             }
         }
 

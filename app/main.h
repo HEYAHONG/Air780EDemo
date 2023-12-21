@@ -5,6 +5,7 @@
 #include "stdlib.h"
 #include "inttypes.h"
 #include "string.h"
+#include "stdio_patch.h"
 
 #include "heventloop.h"
 #include "heventslots.h"

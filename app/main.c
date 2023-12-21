@@ -108,6 +108,9 @@ static void main_init_in_task(void*usr,heventloop_t*loop)
 
     (void)usr;
     (void)loop;
+
+    main_debug_print("main init start!poweron reason=%d!",luat_pm_get_poweron_reason());
+
     {
         main_debug_print("init filesystem!");
         luat_fs_init();
@@ -155,8 +158,6 @@ static void main_init_in_task(void*usr,heventloop_t*loop)
 
 static void main_init(void)
 {
-
-    main_debug_print("main init start!");
 
     //将需要在任务中初始化的工作添加至主任务
     main_add_event(NULL,main_init_in_task,NULL);

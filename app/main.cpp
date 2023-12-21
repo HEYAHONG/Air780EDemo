@@ -1,8 +1,7 @@
 #include "main.h"
 #include "RC.h"
 #include "time.h"
-
-
+#include <string>
 
 static void displaymeminfo()
 {

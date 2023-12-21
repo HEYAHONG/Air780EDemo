@@ -60,7 +60,7 @@
 
 编译本工程的前提是能够正常编译原合宙官方SDK，详细说明见[luatos-soc-2022](https://gitee.com/openLuat/luatos-soc-2022.git)。
 
-- 本工程采用xmake管理编译树，因此需要安装好xmake，其官方网址为https://xmake.io。
+- 本工程采用xmake管理编译树，因此需要安装好xmake，其官方网址为[https://xmake.io](https://xmake.io)。
 - 编译过程中可能需要下载文件，因此需要在整个编译过程中保持网络畅通。
 
 ### Ubuntu

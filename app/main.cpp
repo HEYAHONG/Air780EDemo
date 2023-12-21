@@ -2,6 +2,8 @@
 #include "RC.h"
 #include "time.h"
 
+
+
 static void displaymeminfo()
 {
     size_t total=0,used=0,max_used=0;
@@ -13,6 +15,7 @@ static char * global=new char[30];
 
 void main_task(void *param)
 {
+    (void)param;
     main_add_event(NULL,[](void *,heventloop_t*)
     {
         main_debug_print("main start!");
@@ -26,6 +29,15 @@ void main_task(void *param)
 
         //打印IMEI
         main_debug_print("IMEI:%s",main_get_imei());
+
+        {
+            //打印文件系统信息
+            luat_fs_info_t info= {"",0,0,0,0};
+            if(luat_fs_info("/",&info)==0)
+            {
+                main_debug_print("fsinfo:filesystem= %s ,type= %d ,total= %d bytes,free= %d bytes,block= %d bytes",info.filesystem,(int)info.type,(int)(info.total_block*info.block_size),(int)((info.total_block-info.block_used)*info.block_size),(int)info.block_size);
+            }
+        }
 
         displaymeminfo();
     },NULL);

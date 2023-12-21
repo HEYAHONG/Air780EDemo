@@ -1,12 +1,6 @@
 #include "luat_network_adapter.h"
 #include "common_api.h"
-#include "luat_debug.h"
-#include "luat_rtos.h"
-#include "luat_mobile.h"
 #include "net_lwip.h"
-#include "luat_mem.h"
-#include "luat_uart.h"
-#include "luat_mobile.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "main.h"
@@ -114,6 +108,11 @@ static void main_init_in_task(void*usr,heventloop_t*loop)
 
     (void)usr;
     (void)loop;
+    {
+        main_debug_print("init filesystem!");
+        luat_fs_init();
+    }
+
     {
         //初始化蜂窝网络
         main_debug_print("init lwip!");

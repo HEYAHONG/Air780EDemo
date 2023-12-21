@@ -14,6 +14,40 @@ extern "C"
 {
 #endif // __cplusplus
 
+/*
+    luat接口
+*/
+#include "luat_adc.h"
+#include "luat_adc_legacy.h"
+#include "luat_air153C_wtd.h"
+#include "luat_camera.h"
+#include "luat_crypto.h"
+#include "luat_debug.h"
+#include "luat_flash.h"
+#include "luat_fs.h"
+#include "luat_gpio.h"
+#include "luat_gpio_legacy.h"
+#include "luat_i2c.h"
+#include "luat_i2c_legacy.h"
+#include "luat_iconv.h"
+#include "luat_irq.h"
+#include "luat_kv.h"
+#include "luat_mcu.h"
+#include "luat_mem.h"
+#include "luat_mobile.h"
+#include "luat_otp.h"
+#include "luat_pm.h"
+#include "luat_pwm.h"
+#include "luat_rtc.h"
+#include "luat_rtos.h"
+#include "luat_rtos_legacy.h"
+#include "luat_sms.h"
+#include "luat_spi.h"
+#include "luat_spi_legacy.h"
+#include "luat_uart.h"
+#include "luat_uart_legacy.h"
+#include "luat_wdt.h"
+#include "luat_wifiscan.h"
 
 void main_task(void *param);
 
@@ -32,6 +66,7 @@ void main_free(void *ptr);
 void main_meminfo(size_t *total,size_t *used,size_t *max_used);
 
 int main_debug_print(const char * fmt,...);
+
 
 const char *main_get_imei();
 

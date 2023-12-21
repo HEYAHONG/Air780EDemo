@@ -114,6 +114,12 @@ static void main_init_in_task(void*usr,heventloop_t*loop)
     }
 
     {
+        //初始化KV存储
+        main_debug_print("init kv!");
+        luat_kv_init();
+    }
+
+    {
         //初始化蜂窝网络
         main_debug_print("init lwip!");
         net_lwip_init();

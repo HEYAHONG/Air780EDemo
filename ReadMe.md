@@ -54,15 +54,42 @@
 
 - 操作系统: Windows 
 
+注意:非Windows下可采用[wine](https://www.winehq.org/)编译。
+
 ## 编译准备
+
+编译本工程的前提是能够正常编译原合宙官方SDK，详细说明见[luatos-soc-2022](https://gitee.com/openLuat/luatos-soc-2022.git)。
 
 - 本工程采用xmake管理编译树，因此需要安装好xmake，其官方网址为https://xmake.io。
 - 编译过程中可能需要下载文件，因此需要在整个编译过程中保持网络畅通。
+
+### Ubuntu
+
+对于Ubuntu可采用以下命令安装wine:
+
+```bash
+sudo apt-get install wine winbind
+```
+
+当wine安装好后,也需要安装xmake（Windows版），使用`wine 安装程序名称`启动安装程序并安装。
 
 ## 脚本说明
 
 - build.bat:构建工程文件并编译。
 - clean.bat:清理构建文件
+
+对于非Windows，启动脚本需要使用`wine cmd /c 脚本路径`启动脚本。
+
+## 代码编辑
+
+当成功执行一次构建操作后，[sdk](sdk)目录将产生CMakeLists.txt,利用[CMake](https://cmake.org/)可生成某些IDE的工程文件，可用于代码编辑(不一定可编译)。
+
+本人常用[CodeBlocks](https://www.codeblocks.org/)作为IDE，产生CodeBlocks的工程文件步骤如下:
+
+- 安装好CMake与[Ninja](https://ninja-build.org/)。
+- 创建build目录并进入build目录
+- 执行 `cmake -G "CodeBlocks - Ninja" ../sdk`生成工程文件。
+- 使用CodeBlocks打开生成的cbp工程文件，进行代码编辑。
 
 ## 固件烧录
 

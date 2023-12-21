@@ -112,6 +112,8 @@ static luat_rtos_task_handle main_task_handle;
 static void main_init_in_task(void*usr,heventloop_t*loop)
 {
 
+    (void)usr;
+    (void)loop;
     {
         //初始化蜂窝网络
         main_debug_print("init lwip!");

@@ -46,6 +46,19 @@ static void mainloop_slot(void *signal,void *usr)
     (void)usr;
     //喂狗
     hwatchdog_feed();
+
+}
+
+
+/*
+在任务中处理的操作
+*/
+static void main_init_in_task(void*usr,heventloop_t*loop)
+{
+    (void)usr;
+    (void)loop;
+    main_debug_print("init watchdog!");
+    luat_wdt_set_timeout(3);
 }
 
 static void watchdog_init(void)
@@ -57,6 +70,10 @@ static void watchdog_init(void)
 
     //在主循环中喂狗
     heventslots_register_slot(main_get_mainloop_slot(),NULL,mainloop_slot,NULL);
+
+    //将需要在任务中初始化的工作添加至主任务
+    main_add_event(NULL,main_init_in_task,NULL);
+
 }
 
 INIT_TASK_EXPORT(watchdog_init, "9");

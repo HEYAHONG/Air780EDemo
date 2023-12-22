@@ -18,6 +18,8 @@ static class mobile
     heventloop_t *loop;
     void run();
     void process_callback(luat_mobile_event_callback_data_t &data);
+    bool is_time_sync_ok;//是否同步了时间
+    bool is_netif_ok;//是否网络皆否准备好
 public:
     static void luat_mobile_event_callback(LUAT_MOBILE_EVENT_E event, uint8_t index, uint8_t status);
     static void task_entry(void *param)
@@ -27,7 +29,7 @@ public:
             ((mobile*)param)->run();
         }
     }
-    mobile():loop(NULL)
+    mobile():loop(NULL),is_time_sync_ok(false),is_netif_ok(false)
     {
         loop=heventloop_new(this);
         luat_rtos_task_create(&task_handle,8192,10,"mobile",task_entry,this,16);
@@ -41,6 +43,14 @@ public:
     bool add_event(void *event_usr,void(*event_process)(void *,heventloop_t *),void(*event_onfree)(void *,heventloop_t *))
     {
         return heventloop_add_event_ex1(loop,event_usr,event_process,event_onfree);
+    }
+    bool mobile_is_time_sync_ok()
+    {
+        return is_time_sync_ok;
+    }
+    bool mobile_is_netif_ok()
+    {
+        return is_netif_ok;
     }
 
 } g_mobile;
@@ -141,6 +151,7 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
             {
             case LUAT_MOBILE_NETIF_LINK_ON:
                 main_debug_print("可以上网");
+                is_netif_ok=true;
                 if (luat_mobile_get_apn(0, 0, apn, sizeof(apn)))
                 {
                     main_debug_print("默认apn %s", apn);
@@ -157,11 +168,13 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
                 break;
             default:
                 main_debug_print("不能上网");
+                is_netif_ok=false;
                 break;
             }
             break;
         case LUAT_MOBILE_EVENT_TIME_SYNC:
             main_debug_print("通过移动网络同步了UTC时间");
+            is_time_sync_ok=true;
             break;
         case LUAT_MOBILE_EVENT_CSCON:
             main_debug_print("RRC状态 %d", status);
@@ -252,15 +265,18 @@ void mobile::run()
     }
 }
 
-/** \brief 添加事件到事件循环(mobile)
- *
- * \param  event_usr void* 事件中的用户参数
- * \param  event_process 事件处理,第一个参数为用户参数,第二个参数为heventloop_t指针。
- * \param  event_onfree  事件释放回调,第一个参数为用户参数,第二个参数为heventloop_t指针。通常用于释放用户参数。
- * \return bool 是否添加成功,当内存不足或者到达最大事件数时将添加失败。
- *
- */
+
 bool mobile_add_event(void *event_usr,void(*event_process)(void *,heventloop_t *),void(*event_onfree)(void *,heventloop_t *))
 {
     return g_mobile.add_event(event_usr,event_process,event_onfree);
+}
+
+bool mobile_is_time_sync_ok()
+{
+    return g_mobile.mobile_is_time_sync_ok();
+}
+
+bool mobile_is_netif_ok()
+{
+    return g_mobile.mobile_is_netif_ok();
 }

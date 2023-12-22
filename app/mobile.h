@@ -17,6 +17,20 @@ extern "C"
  */
 bool mobile_add_event(void *event_usr,void(*event_process)(void *,heventloop_t *),void(*event_onfree)(void *,heventloop_t *));
 
+/** \brief 是否同步时间
+ *
+ * \return bool 是否同步时间
+ *
+ */
+bool mobile_is_time_sync_ok();
+
+/** \brief 是否NETIF准备好
+ *
+ * \return bool 是否NETIF准备好
+ *
+ */
+bool mobile_is_netif_ok();
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

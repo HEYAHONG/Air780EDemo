@@ -6,7 +6,7 @@
 #endif // USE_KCONFIG
 
 #ifndef CONFIG_APP_NAME
-#define CONFIG_APP_NAME "Air780EDemo"
+#define CONFIG_APP_NAME "Air780E"
 #endif // CONFIG_APP_NAME
 
 

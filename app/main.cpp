@@ -20,7 +20,7 @@ void main_task(void *param)
     (void)param;
     main_add_event(NULL,[](void *,heventloop_t*)
     {
-        main_debug_print("main start!");
+        main_debug_print("main start,APP=" CONFIG_APP_NAME "!");
 
         {
             //打印banner

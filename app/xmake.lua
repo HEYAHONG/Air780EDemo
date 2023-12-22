@@ -11,10 +11,10 @@ includes(SDK_TOP .. "../hcppbox")
 target(TARGET_NAME)
     set_kind("static")
     set_targetdir(LIB_DIR)
-    
+
+    add_includedirs("./../",{public = true})    
     if os.getenv("USE_KCONFIG") == "1" 
     then
-       add_includedirs("./../",{public = true})
        add_defines("USE_KCONFIG")        
     end
         

@@ -1,0 +1,6 @@
+mainmenu "Air780E"
+
+
+config APP_NAME
+    string "App Name"
+    default "Air780EDemo"

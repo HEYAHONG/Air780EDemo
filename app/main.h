@@ -1,6 +1,7 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
+#include "Kconfig.h"
 #include "stdint.h"
 #include "stdlib.h"
 #include "inttypes.h"

@@ -10,6 +10,13 @@
 - C++全局类的构造函数不可用(可由应用代码支持),可编译但需要谨慎使用（若必须使用，请充分测试）。
 - C++异常可能出现问题(不确定),可编译但需要谨慎使用（若必须使用，请充分测试）。
 
+## Kconfig
+
+采用python软件包kconfiglib,通过pyinstaller打包而来,主要打包以下工具:
+
+- genconfg
+- guiconfig
+
 ## 源代码下载
 
 由于本源代码包含第三方源代码,故直接下载可能有部分源代码缺失，需要通过以下方法解决:
@@ -77,6 +84,7 @@ sudo apt-get install wine winbind
 
 - build.bat:构建工程文件并编译。
 - clean.bat:清理构建文件
+- Kconfig.bat:调整Kconfig设置。
 
 对于非Windows，启动脚本需要使用`wine cmd /c 脚本路径`启动脚本。
 

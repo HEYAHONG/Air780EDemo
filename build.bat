@@ -42,6 +42,15 @@ POPD 2> nul > nul
 @rem 给SDK打补丁(替换一些文件)
 COPY /Y  "%APP_ROOT_PATH%\sdk_patch\ec618_0h00_flash.c"    "%APP_ROOT_PATH%\sdk\PLAT\core\ld\ec618_0h00_flash.c"
 
+@rem 执行Kconfig相关程序,生成config.h
+set KCONFIG_AUTOHEADER=config.h
+set KCONFIG_CONFIG=.config
+set USE_KCONFIG=0
+PUSHD "%APP_ROOT_PATH%" 2> nul > nul
+"genconfig.exe" 2> nul > nul
+POPD 2> nul > nul
+if exist "%APP_ROOT_PATH%\config.h" set USE_KCONFIG=1
+
 @rem 构建工程并产生CMakeLists.txt(用于方便使用编辑器打开)
 PUSHD "%APP_ROOT_PATH%\sdk" 2> nul > nul
 xmake -y -w

@@ -12,6 +12,12 @@ target(TARGET_NAME)
     set_kind("static")
     set_targetdir(LIB_DIR)
     
+    if os.getenv("USE_KCONFIG") == "1" 
+    then
+       add_includedirs("./../",{public = true})
+       add_defines("USE_KCONFIG")        
+    end
+        
     --加入代码和头文件
     add_includedirs("./",{public = true})
     add_files("./*.c",{public = true})

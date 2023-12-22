@@ -17,6 +17,14 @@ kconfig工具采用python软件包kconfiglib,通过pyinstaller打包而来,主�
 - genconfg
 - guiconfig
 
+注意：若使用wine启动exe工具，推荐进行如下设置：
+
+- 使用`winecfg`将操作系统设为windows 10且将prosys设为停用（若对其它应用有影响可单独对本工程的exe设置）。
+
+![winecfg_version](doc/image/winecfg_version.png)
+
+![winecfg_propsys](doc/image/winecfg_propsys.png)
+
 ## 源代码下载
 
 由于本源代码包含第三方源代码,故直接下载可能有部分源代码缺失，需要通过以下方法解决:

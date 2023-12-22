@@ -45,7 +45,7 @@ static void mainloop_slot(void *signal,void *usr)
     (void)signal;
     (void)usr;
     //喂狗
-    hwatchdog_feed();
+    HWATCHDOG_FEED();
 
 }
 

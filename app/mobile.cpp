@@ -2,24 +2,28 @@
 #include "heventloop.h"
 #include "watchdog.h"
 
-typedef struct
-{
-    LUAT_MOBILE_EVENT_E event;
-    uint8_t index;
-    uint8_t status;
-} luat_mobile_event_callback_data_t;
 /*
     此文件主要对mobile相关事件进行处理，（主要是创建一个线程转发事件,即在任务中执行事件处理函数）。
     单例模式
 */
 static class mobile
 {
-    static luat_rtos_task_handle task_handle;
+    static luat_rtos_task_handle m_task_handle;
+    static luat_rtos_mutex_t m_lock;
+    void lock()
+    {
+        luat_rtos_mutex_lock(m_lock,LUAT_WAIT_FOREVER);
+    }
+    void unlock()
+    {
+        luat_rtos_mutex_unlock(m_lock);
+    }
     heventloop_t *loop;
+    heventchain_t *event_chain;
     void run();
     void process_callback(luat_mobile_event_callback_data_t &data);
-    bool is_time_sync_ok;//是否同步了时间
-    bool is_netif_ok;//是否网络皆否准备好
+    bool m_is_time_sync_ok;//是否同步了时间
+    bool m_is_netif_ok;//是否网络皆否准备好
 public:
     static void luat_mobile_event_callback(LUAT_MOBILE_EVENT_E event, uint8_t index, uint8_t status);
     static void task_entry(void *param)
@@ -29,10 +33,28 @@ public:
             ((mobile*)param)->run();
         }
     }
-    mobile():loop(NULL),is_time_sync_ok(false),is_netif_ok(false)
+    mobile():loop(NULL),event_chain(NULL),m_is_time_sync_ok(false),m_is_netif_ok(false)
     {
         loop=heventloop_new(this);
-        luat_rtos_task_create(&task_handle,8192,10,"mobile",task_entry,this,16);
+        luat_rtos_mutex_create(&m_lock);
+        event_chain=heventchain_new_with_lock(this,[](void * usr)
+        {
+            if(usr != NULL)
+            {
+                mobile * m_mobile=(mobile *)usr;
+                m_mobile->lock();
+            }
+        },
+        [](void * usr)
+        {
+            if(usr != NULL)
+            {
+                mobile * m_mobile=(mobile *)usr;
+                m_mobile->unlock();
+            }
+        }
+                                             );
+        luat_rtos_task_create(&m_task_handle,8192,10,"mobile",task_entry,this,16);
     }
     mobile(mobile &oths) = delete;
     mobile &operator =(mobile &oths) = delete;
@@ -46,21 +68,32 @@ public:
     }
     bool mobile_is_time_sync_ok()
     {
-        return is_time_sync_ok;
+        return m_is_time_sync_ok;
     }
     bool mobile_is_netif_ok()
     {
-        return is_netif_ok;
+        return m_is_netif_ok;
+    }
+    uint32_t mobile_install_hook(uint32_t priority,void *hook_usr,bool (*hook)(void *,void *),void (*onfree)(void *))
+    {
+        return heventchain_install_hook(event_chain,priority,hook_usr,hook,onfree);
+    }
+
+    void mobile_uninstall_hook(uint32_t id)
+    {
+        heventchain_uninstall_hook(event_chain,id);
     }
 
 } g_mobile;
 
-luat_rtos_task_handle mobile::task_handle=NULL;
+luat_rtos_task_handle mobile::m_task_handle=NULL;
+luat_rtos_mutex_t mobile::m_lock=NULL;
 
 void mobile::process_callback(luat_mobile_event_callback_data_t &data)
 {
     //此处处理事件(注意:开机时的事件可能会丢失)
     main_debug_print("mobile_event:%d,%d,%d",(int)data.event,(int)data.index,(int)data.status);
+    if(!heventchain_start(event_chain,&data))
     {
         LUAT_MOBILE_EVENT event=data.event;
         uint8_t index=data.index;
@@ -151,7 +184,7 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
             {
             case LUAT_MOBILE_NETIF_LINK_ON:
                 main_debug_print("可以上网");
-                is_netif_ok=true;
+                m_is_netif_ok=true;
                 if (luat_mobile_get_apn(0, 0, apn, sizeof(apn)))
                 {
                     main_debug_print("默认apn %s", apn);
@@ -168,13 +201,13 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
                 break;
             default:
                 main_debug_print("不能上网");
-                is_netif_ok=false;
+                m_is_netif_ok=false;
                 break;
             }
             break;
         case LUAT_MOBILE_EVENT_TIME_SYNC:
             main_debug_print("通过移动网络同步了UTC时间");
-            is_time_sync_ok=true;
+            m_is_time_sync_ok=true;
             break;
         case LUAT_MOBILE_EVENT_CSCON:
             main_debug_print("RRC状态 %d", status);
@@ -279,4 +312,14 @@ bool mobile_is_time_sync_ok()
 bool mobile_is_netif_ok()
 {
     return g_mobile.mobile_is_netif_ok();
+}
+
+uint32_t mobile_install_hook(uint32_t priority,void *hook_usr,bool (*hook)(void *,void *),void (*onfree)(void *))
+{
+    return g_mobile.mobile_install_hook(priority,hook_usr,hook,onfree);
+}
+
+void mobile_uninstall_hook(uint32_t id)
+{
+    g_mobile.mobile_uninstall_hook(id);
 }

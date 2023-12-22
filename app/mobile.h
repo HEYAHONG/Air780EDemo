@@ -2,6 +2,7 @@
 #define __MOBILE_H__
 #include "main.h"
 #include "heventloop.h"
+#include "heventchain.h"
 #ifdef __cplusplus
 extern "C"
 {
@@ -30,6 +31,33 @@ bool mobile_is_time_sync_ok();
  *
  */
 bool mobile_is_netif_ok();
+
+typedef struct
+{
+    LUAT_MOBILE_EVENT_E event;
+    uint8_t index;
+    uint8_t status;
+} luat_mobile_event_callback_data_t; /**< 事件数据 */
+
+/** \brief 安装事件钩子
+ *
+ * \param priority uint32_t 优先级,数值越小优先级越高,同一优先级后安装的优先级高。
+ * \param hook_usr void*钩子中的用户参数
+ * \param hook 钩子函数,第一个参数为传入参数(luat_mobile_event_callback_data_t *),第二个参数为用户参数,返回值为是否成功处理,通常返回false以传递到后面的钩子。
+ * \param onfree 槽释放回调,第一个参数为用户参数。通常在卸载钩子时调用
+ * \return uint32_t 注册id,为0表示失败
+ *
+ */
+
+uint32_t mobile_install_hook(uint32_t priority,void *hook_usr,bool (*hook)(void *,void *),void (*onfree)(void *));
+
+/** \brief 卸载事件钩子
+ *
+ * \param id uint32_t 注册id,由安装时返回
+ *
+ */
+void mobile_uninstall_hook(uint32_t id);
+
 
 #ifdef __cplusplus
 }

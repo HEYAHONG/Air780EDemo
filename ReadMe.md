@@ -12,7 +12,7 @@
 
 ## Kconfig
 
-采用python软件包kconfiglib,通过pyinstaller打包而来,主要打包以下工具:
+kconfig工具采用python软件包kconfiglib,通过pyinstaller打包而来,主要打包以下工具:
 
 - genconfg
 - guiconfig
@@ -59,7 +59,7 @@
 
 # 编译
 
-- 操作系统: Windows 
+- 操作系统: Windows  10及更新版本
 
 注意:非Windows下可采用[wine](https://www.winehq.org/)编译。
 

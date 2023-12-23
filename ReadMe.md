@@ -25,6 +25,8 @@ kconfig工具采用python软件包kconfiglib,通过pyinstaller打包而来,主�
 
 ![winecfg_propsys](doc/image/winecfg_propsys.png)
 
+除了使用`winecfg`进行设置，也可采用注册表导入的方式，即在当前目录执行`wine reg  import Kconfig_wine.reg`。
+
 ## 源代码下载
 
 由于本源代码包含第三方源代码,故直接下载可能有部分源代码缺失，需要通过以下方法解决:

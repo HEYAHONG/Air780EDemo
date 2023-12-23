@@ -163,7 +163,7 @@ static void main_init(void)
     main_add_event(NULL,main_init_in_task,NULL);
 
     //创建主任务
-    luat_rtos_task_create(&main_task_handle,8192,10,"main",main_task,NULL,16);
+    luat_rtos_task_create(&main_task_handle,8192,0,"main",main_task,NULL,16);
 
 }
 

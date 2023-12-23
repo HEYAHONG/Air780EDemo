@@ -37,6 +37,10 @@ kconfig工具采用python软件包kconfiglib,通过pyinstaller打包而来,主�
    git submodule update --init --recursive
   ```
 
+### 源代码更新
+
+若使用`git pull`更新已下载的源代码，请在更新后使用`git submodule update --init --recursive`更新子模块。
+
 ## 资源文件
 
 类似于桌面程序的资源文件。源代码实现的目录为 [rc](rc/)。
@@ -92,7 +96,7 @@ sudo apt-get install wine winbind
 
 - build.bat:构建工程文件并编译。
 - clean.bat:清理构建文件
-- Kconfig.bat:调整Kconfig设置。
+- Kconfig.bat:调整Kconfig设置。使用此工具可修改Kconfig设置,也可手动修改.config文件(不存在则创建)修改Kconfig设置。
 
 对于非Windows，启动脚本需要使用`wine cmd /c 脚本路径`启动脚本。
 

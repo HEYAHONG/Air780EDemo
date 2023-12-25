@@ -105,6 +105,25 @@ bool main_add_event(void *event_usr,void(*event_process)(void *,heventloop_t *),
  */
 heventslots_t *main_get_mainloop_slot();
 
+/** \brief 注册主循环槽函数（一般用于需要周期调用的函数）
+ *
+ * \param slot_usr void*槽中的用户参数
+ * \param slot 槽函数,第一个参数为信号(一般为空),第二个参数为用户参数。
+ * \param onfree 槽释放回调,第一个参数为用户参数。
+ * \return uint32_t 注册id,为0表示失败
+ *
+ */
+
+uint32_t main_register_mainloop_slot(void *slot_usr,void (*slot)(void *,void *),void (*onfree)(void *));
+
+
+/** \brief 取消注册主循环槽函数
+ *
+ * \param id uint32_t 注册id,由注册时返回
+ *
+ */
+void main_unregister_mainloop_slot(uint32_t id);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

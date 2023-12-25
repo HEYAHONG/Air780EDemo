@@ -89,6 +89,17 @@ heventslots_t *main_get_mainloop_slot()
     return main_loop_slot;
 }
 
+
+uint32_t main_register_mainloop_slot(void *slot_usr,void (*slot)(void *,void *),void (*onfree)(void *))
+{
+    return heventslots_register_slot(main_get_mainloop_slot(),slot_usr,slot,onfree);
+}
+
+void main_unregister_mainloop_slot(uint32_t id)
+{
+    heventslots_unregister_slot(main_get_mainloop_slot(),id);
+}
+
 static luat_rtos_task_handle main_task_handle;
 
 /*

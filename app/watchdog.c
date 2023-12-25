@@ -69,7 +69,7 @@ static void watchdog_init(void)
 
 
     //在主循环中喂狗
-    heventslots_register_slot(main_get_mainloop_slot(),NULL,mainloop_slot,NULL);
+    main_register_mainloop_slot(NULL,mainloop_slot,NULL);
 
     //将需要在任务中初始化的工作添加至主任务
     main_add_event(NULL,main_init_in_task,NULL);

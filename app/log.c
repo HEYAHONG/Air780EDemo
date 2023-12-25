@@ -132,7 +132,7 @@ static void app_log_init()
 
     soc_init_unilog_uart(0,LOG_BAUD,false);
 
-    heventslots_register_slot(main_get_mainloop_slot(),NULL,log_slot,NULL);
+    main_register_mainloop_slot(NULL,log_slot,NULL);
 
 }
 

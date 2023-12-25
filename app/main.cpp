@@ -10,7 +10,7 @@ static void displaymeminfo()
 {
     size_t total=0,used=0,max_used=0;
     main_meminfo(&total,&used,&max_used);
-    main_debug_print("memory total: %" PRIu32  " bytes,max_used: %" PRIu32 " bytes,free: %" PRIu32 " bytes",total,max_used,total-used);
+    main_debug_print("memory total: %" PRIu32  " bytes,max_used: %" PRIu32 " bytes,free: %" PRIu32 " bytes\r\n",total,max_used,total-used);
 }
 
 static char * global=new char[30];
@@ -20,7 +20,7 @@ void main_task(void *param)
     (void)param;
     main_add_event(NULL,[](void *,heventloop_t*)
     {
-        main_debug_print("main start,APP=" CONFIG_APP_NAME "!");
+        main_debug_print("main start,APP=" CONFIG_APP_NAME "!\r\n");
 
         {
             //打印banner
@@ -30,14 +30,14 @@ void main_task(void *param)
         }
 
         //打印IMEI
-        main_debug_print("IMEI:%s",main_get_imei());
+        main_debug_print("IMEI:%s\r\n",main_get_imei());
 
         {
             //打印文件系统信息
             luat_fs_info_t info= {"",0,0,0,0};
             if(luat_fs_info("/",&info)==0)
             {
-                main_debug_print("fsinfo:filesystem= %s ,type= %d ,total= %d bytes,free= %d bytes,block= %d bytes",info.filesystem,(int)info.type,(int)(info.total_block*info.block_size),(int)((info.total_block-info.block_used)*info.block_size),(int)info.block_size);
+                main_debug_print("fsinfo:filesystem= %s ,type= %d ,total= %d bytes,free= %d bytes,block= %d bytes\r\n",info.filesystem,(int)info.type,(int)(info.total_block*info.block_size),(int)((info.total_block-info.block_used)*info.block_size),(int)info.block_size);
             }
         }
 
@@ -65,7 +65,7 @@ void main_task(void *param)
                 }
                 Json::StyledWriter writer;
                 std::string payload=writer.write(json);
-                main_debug_print("app.json config\n%s",payload.c_str());
+                main_debug_print("app.json config\n%s\r\n",payload.c_str());
             }
         }
 
@@ -95,7 +95,7 @@ void main_task(void *param)
                 const char * _timestr=asctime(localtime(&current_time));
                 memcpy(timestr,_timestr,strlen(_timestr)-1);
             }
-            main_debug_print("main loop,tick=%" PRIu32 ",time=%s!",main_task_gettick_ms(),timestr);
+            main_debug_print("main loop,tick=%" PRIu32 ",time=%s!\r\n",main_task_gettick_ms(),timestr);
             displaymeminfo();
         }
 
@@ -128,5 +128,5 @@ void operator delete[](void *ptr)
 
 void __cxa_pure_virtual(void)
 {
-    main_debug_print("Illegal to call a pure virtual function.\n");
+    main_debug_print("Illegal to call a pure virtual function.\r\n");
 }

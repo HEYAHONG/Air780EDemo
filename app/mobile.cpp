@@ -92,7 +92,7 @@ luat_rtos_mutex_t mobile::m_lock=NULL;
 void mobile::process_callback(luat_mobile_event_callback_data_t &data)
 {
     //此处处理事件(注意:开机时的事件可能会丢失)
-    main_debug_print("mobile_event:%d,%d,%d",(int)data.event,(int)data.index,(int)data.status);
+    main_debug_print("mobile_event:%d,%d,%d\r\n",(int)data.event,(int)data.index,(int)data.status);
     if(!heventchain_start(event_chain,&data))
     {
         LUAT_MOBILE_EVENT event=data.event;
@@ -109,42 +109,42 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
         switch(event)
         {
         case LUAT_MOBILE_EVENT_CFUN:
-            main_debug_print("CFUN消息，status %d", status);
+            main_debug_print("LUAT_MOBILE_EVENT_CFUN:%d\r\n", status);
             break;
         case LUAT_MOBILE_EVENT_SIM:
             if (status != LUAT_MOBILE_SIM_NUMBER)
             {
-                main_debug_print("SIM卡消息，卡槽%d", index);
+                main_debug_print("LUAT_MOBILE_EVENT_SIM:%d", index);
             }
             switch(status)
             {
             case LUAT_MOBILE_SIM_READY:
-                main_debug_print("SIM卡正常工作");
+                main_debug_print("LUAT_MOBILE_SIM_READY\r\n");
                 luat_mobile_get_iccid(index, iccid, sizeof(iccid));
-                main_debug_print("ICCID %s", iccid);
+                main_debug_print("ICCID %s\r\n", iccid);
                 luat_mobile_get_imsi(index, imsi, sizeof(imsi));
-                main_debug_print("IMSI %s", imsi);
+                main_debug_print("IMSI %s\r\n", imsi);
                 break;
             case LUAT_MOBILE_NO_SIM:
-                main_debug_print("SIM卡不存在");
+                main_debug_print("LUAT_MOBILE_NO_SIM\r\n");
                 break;
             case LUAT_MOBILE_SIM_NEED_PIN:
-                main_debug_print("SIM卡需要输入PIN码");
+                main_debug_print("LUAT_MOBILE_SIM_NEED_PIN\r\n");
                 break;
             }
             break;
         case LUAT_MOBILE_EVENT_REGISTER_STATUS:
-            main_debug_print("移动网络服务状态变更，当前为%d", status);
+            main_debug_print("LUAT_MOBILE_EVENT_REGISTER_STATUS:%d\r\n", status);
             break;
         case LUAT_MOBILE_EVENT_CELL_INFO:
             switch(status)
             {
             case LUAT_MOBILE_CELL_INFO_UPDATE:
-                main_debug_print("周期性搜索小区信息完成一次");
+                main_debug_print("LUAT_MOBILE_CELL_INFO_UPDATE\r\n");
                 luat_mobile_get_last_notify_cell_info(&cell_info);
                 if (cell_info.lte_service_info.cid)
                 {
-                    main_debug_print("服务小区信息 mcc %x mnc %x cellid %u band %d tac %u pci %u earfcn %u is_tdd %d rsrp %d rsrq %d snr %d rssi %d",
+                    main_debug_print("cell  mcc %x mnc %x cellid %u band %d tac %u pci %u earfcn %u is_tdd %d rsrp %d rsrq %d snr %d rssi %d\r\n",
                                      cell_info.lte_service_info.mcc, cell_info.lte_service_info.mnc, cell_info.lte_service_info.cid,
                                      cell_info.lte_service_info.band, cell_info.lte_service_info.tac, cell_info.lte_service_info.pci, cell_info.lte_service_info.earfcn,
                                      cell_info.lte_service_info.is_tdd, cell_info.lte_service_info.rsrp, cell_info.lte_service_info.rsrq,
@@ -154,20 +154,20 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
                 {
                     if (cell_info.lte_info[i].cid)
                     {
-                        main_debug_print("邻小区 %d mcc %x mnc %x cellid %u tac %u pci %u", i + 1, cell_info.lte_info[i].mcc,
+                        main_debug_print("neighbor %d mcc %x mnc %x cellid %u tac %u pci %u\r\n", i + 1, cell_info.lte_info[i].mcc,
                                          cell_info.lte_info[i].mnc, cell_info.lte_info[i].cid, cell_info.lte_info[i].tac, cell_info.lte_info[i].pci);
-                        main_debug_print("邻小区 %d earfcn %u rsrp %d rsrq %d snr %d", i + 1, cell_info.lte_info[i].earfcn, cell_info.lte_info[i].rsrp,
+                        main_debug_print("neighbor %d earfcn %u rsrp %d rsrq %d snr %d\r\n", i + 1, cell_info.lte_info[i].earfcn, cell_info.lte_info[i].rsrp,
                                          cell_info.lte_info[i].rsrq, cell_info.lte_info[i].snr);
                     }
                 }
                 break;
             case LUAT_MOBILE_SIGNAL_UPDATE:
-                main_debug_print("服务小区信号状态变更");
+                main_debug_print("LUAT_MOBILE_SIGNAL_UPDATE\r\n");
                 luat_mobile_get_last_notify_signal_strength_info(&signal_info);
                 luat_mobile_get_last_notify_signal_strength(&csq);
                 if (signal_info.luat_mobile_lte_signal_strength_vaild)
                 {
-                    main_debug_print("rsrp %d, rsrq %d, snr %d, rssi %d, csq %d %d", signal_info.lte_signal_strength.rsrp,
+                    main_debug_print("rsrp %d, rsrq %d, snr %d, rssi %d, csq %d %d\r\n", signal_info.lte_signal_strength.rsrp,
                                      signal_info.lte_signal_strength.rsrq, signal_info.lte_signal_strength.snr,
                                      signal_info.lte_signal_strength.rssi, csq, luat_mobile_rssi_to_csq(signal_info.lte_signal_strength.rssi));
                 }
@@ -176,47 +176,47 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
             }
             break;
         case LUAT_MOBILE_EVENT_PDP:
-            main_debug_print("CID %d PDP激活状态变更为 %d", index, status);
+            main_debug_print("LUAT_MOBILE_EVENT_PDP:%d to %d\r\n", index, status);
             break;
         case LUAT_MOBILE_EVENT_NETIF:
-            main_debug_print("internet工作状态变更为 %d,cause %d", status,index);
+            main_debug_print("LUAT_MOBILE_EVENT_NETIF:%d,cause %d\r\n", status,index);
             switch (status)
             {
             case LUAT_MOBILE_NETIF_LINK_ON:
-                main_debug_print("可以上网");
+                main_debug_print("net up\r\n");
                 m_is_netif_ok=true;
                 if (luat_mobile_get_apn(0, 0, apn, sizeof(apn)))
                 {
-                    main_debug_print("默认apn %s", apn);
+                    main_debug_print("default apn %s\r\n", apn);
                 }
                 luat_mobile_get_local_ip(0, 1, &ipv4, &ipv6);
                 if (ipv4.type != 0xff)
                 {
-                    main_debug_print("IPV4 %s", ip4addr_ntoa(&ipv4.u_addr.ip4));
+                    main_debug_print("IPV4 %s\r\n", ip4addr_ntoa(&ipv4.u_addr.ip4));
                 }
                 if (ipv6.type != 0xff)
                 {
-                    main_debug_print("IPV6 %s", ip6addr_ntoa(&ipv4.u_addr.ip6));
+                    main_debug_print("IPV6 %s\r\n", ip6addr_ntoa(&ipv4.u_addr.ip6));
                 }
                 break;
             default:
-                main_debug_print("不能上网");
+                main_debug_print("net down\r\n");
                 m_is_netif_ok=false;
                 break;
             }
             break;
         case LUAT_MOBILE_EVENT_TIME_SYNC:
-            main_debug_print("通过移动网络同步了UTC时间");
+            main_debug_print("LUAT_MOBILE_EVENT_TIME_SYNC\r\n");
             m_is_time_sync_ok=true;
             break;
         case LUAT_MOBILE_EVENT_CSCON:
-            main_debug_print("RRC状态 %d", status);
+            main_debug_print("LUAT_MOBILE_EVENT_CSCON:%d\r\n", status);
             break;
         case LUAT_MOBILE_EVENT_NAS_ERROR:
-            main_debug_print("NAS异常类型 %d，拒绝原因 %d", index, status);
+            main_debug_print(" LUAT_MOBILE_EVENT_NAS_ERROR:%d %d\r\n", index, status);
             break;
         case LUAT_MOBILE_EVENT_FATAL_ERROR:
-            main_debug_print("网络需要严重故障，建议在5秒后重启协议栈");
+            main_debug_print("LUAT_MOBILE_EVENT_FATAL_ERROR\r\n");
             break;
         default:
             break;
@@ -257,7 +257,7 @@ void mobile::luat_mobile_event_callback(LUAT_MOBILE_EVENT_E event, uint8_t index
 
 void mobile::run()
 {
-    main_debug_print("mobile thread started!");
+    main_debug_print("mobile thread started!\r\n");
     luat_mobile_event_register_handler(luat_mobile_event_callback);
     uint32_t loop_start_tick=main_task_gettick_ms();
     {
@@ -269,13 +269,13 @@ void mobile::run()
                 uint32_t loop_start_tick=*(uint32_t *)info->usr;
                 if(main_task_gettick_ms()-loop_start_tick > 120000)//检查是否超时
                 {
-                    main_debug_print("mobile watchdog reset!");
+                    main_debug_print("mobile watchdog reset!\r\n");
                     return false;
                 }
             }
             return true;
         },0,&loop_start_tick);
-        main_debug_print("mobile watchdog init!");
+        main_debug_print("mobile watchdog init!\r\n");
     }
     while(true)
     {

@@ -67,7 +67,16 @@ void main_free(void *ptr);
 
 void main_meminfo(size_t *total,size_t *used,size_t *max_used);
 
-int main_debug_print(const char * fmt,...);
+#include "printf.h"
+void main_app_log_output(char character, void* arg);
+#ifndef main_debug_print
+#define main_debug_print(fmt,...) {\
+                                    luat_debug_print(fmt,##__VA_ARGS__);\
+                                    main_enter_critical();\
+                                    fctprintf(main_app_log_output,NULL,fmt,##__VA_ARGS__);\
+                                    main_exit_critical();\
+                                   }
+#endif // main_debug_print
 
 
 const char *main_get_imei();

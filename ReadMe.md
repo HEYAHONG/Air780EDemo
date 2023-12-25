@@ -123,5 +123,6 @@ sudo apt-get install wine winbind
 
 # 调试
 
-采用Luatools的4G模块USB打印,采用USB调试。
+- 采用Luatools的4G模块USB打印,采用USB调试。
+- 串口调试。串口0(调试串口) 115200 8N1。注意:由于占用了调试串口,不能使用原厂工具抓log。
 

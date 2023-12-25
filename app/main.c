@@ -53,15 +53,6 @@ void main_meminfo(size_t *total,size_t *used,size_t *max_used)
     luat_meminfo_sys(total,used,max_used);
 }
 
-extern void soc_vsprintf(uint8_t no_print, const char *fmt, va_list ap);
-int main_debug_print(const char * fmt,...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    soc_vsprintf(0, fmt, ap);
-    va_end(ap);
-    return 0;
-}
 
 const char *main_get_imei()
 {
@@ -109,22 +100,22 @@ static void main_init_in_task(void*usr,heventloop_t*loop)
     (void)usr;
     (void)loop;
 
-    main_debug_print("main init start!poweron reason=%d!",luat_pm_get_poweron_reason());
+    main_debug_print("main init start!poweron reason=%d!\r\n",luat_pm_get_poweron_reason());
 
     {
-        main_debug_print("init filesystem!");
+        main_debug_print("init filesystem!\r\n");
         luat_fs_init();
     }
 
     {
         //初始化KV存储
-        main_debug_print("init kv!");
+        main_debug_print("init kv!\r\n");
         luat_kv_init();
     }
 
     {
         //初始化蜂窝网络
-        main_debug_print("init lwip!");
+        main_debug_print("init lwip!\r\n");
         net_lwip_init();
         net_lwip_register_adapter(NW_ADAPTER_INDEX_LWIP_GPRS);
         network_register_set_default(NW_ADAPTER_INDEX_LWIP_GPRS);
@@ -132,7 +123,7 @@ static void main_init_in_task(void*usr,heventloop_t*loop)
 
     {
         //初始化LED
-        main_debug_print("init led!");
+        main_debug_print("init led!\r\n");
         led_init();
     }
 
@@ -140,7 +131,7 @@ static void main_init_in_task(void*usr,heventloop_t*loop)
 
     {
         //初始化C++
-        main_debug_print("init cpp environment!");
+        main_debug_print("init cpp environment!\r\n");
         typedef void(*pfunc)();
         extern pfunc __ctors_start__[];
         extern pfunc __ctors_end__[];
@@ -167,4 +158,4 @@ static void main_init(void)
 
 }
 
-INIT_TASK_EXPORT(main_init, "1");
+INIT_TASK_EXPORT(main_init, "9");

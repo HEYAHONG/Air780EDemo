@@ -1,0 +1,4 @@
+
+config UART_APP_DEBUG
+    bool "uart app debug(uart0)"
+    default y

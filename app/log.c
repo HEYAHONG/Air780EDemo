@@ -6,6 +6,7 @@
 #include "printf.h"
 #include "hringbuf.h"
 
+#if CONFIG_UART_APP_DEBUG
 /*
     本文件主要将uart0作为APP日志输出口,而不是作为C-SDK日志输出。
 */
@@ -138,5 +139,10 @@ static void app_log_init()
 
 
 INIT_TASK_EXPORT(app_log_init,"1");
-
-
+#else
+void main_app_log_output(char character, void* arg)
+{
+    (void)character;
+    (void)arg;
+}
+#endif // CONFIG_UART_APP_DEBUG

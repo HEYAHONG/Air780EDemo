@@ -32,6 +32,13 @@ bool mobile_is_time_sync_ok();
  */
 bool mobile_is_netif_ok();
 
+/** \brief 是否internet（需要启用internet检测（将消耗流量），否则恒为假）
+ *
+ * \return bool 是否internet
+ *
+ */
+bool mobile_is_internet();
+
 typedef struct
 {
     LUAT_MOBILE_EVENT_E event;

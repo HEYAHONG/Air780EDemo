@@ -1,6 +1,7 @@
 #include "mobile.h"
 #include "heventloop.h"
 #include "watchdog.h"
+#include "httpclient.h"
 
 /*
     此文件主要对mobile相关事件进行处理，（主要是创建一个线程转发事件,即在任务中执行事件处理函数）。
@@ -24,6 +25,7 @@ static class mobile
     void process_callback(luat_mobile_event_callback_data_t &data);
     bool m_is_time_sync_ok;//是否同步了时间
     bool m_is_netif_ok;//是否网络皆否准备好
+    bool m_is_internet;//是否在互联网
 public:
     static void luat_mobile_event_callback(LUAT_MOBILE_EVENT_E event, uint8_t index, uint8_t status);
     static void task_entry(void *param)
@@ -33,7 +35,7 @@ public:
             ((mobile*)param)->run();
         }
     }
-    mobile():loop(NULL),event_chain(NULL),m_is_time_sync_ok(false),m_is_netif_ok(false)
+    mobile():loop(NULL),event_chain(NULL),m_is_time_sync_ok(false),m_is_netif_ok(false),m_is_internet(false)
     {
         loop=heventloop_new(this);
         luat_rtos_mutex_create(&m_lock);
@@ -74,6 +76,11 @@ public:
     {
         return m_is_netif_ok;
     }
+    bool mobile_is_internet()
+    {
+        return m_is_internet;
+    }
+
     uint32_t mobile_install_hook(uint32_t priority,void *hook_usr,bool (*hook)(void *,void *),void (*onfree)(void *))
     {
         return heventchain_install_hook(event_chain,priority,hook_usr,hook,onfree);
@@ -104,12 +111,30 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
             {
                 //已联网
                 luat_socket_check_ready(index, NULL);
+                m_is_netif_ok=true;
+#if CONFIG_MOBILE_INTERNET_DETECT
+                std::string index_html=http_get(CONFIG_MOBILE_INTERNET_DETECT_URL);
+                if(!index_html.empty())
+                {
+                    m_is_internet=true;
+                    main_debug_print("internet is ok(" CONFIG_MOBILE_INTERNET_DETECT_URL " length:%d)!\r\n",(int)index_html.length());
+                }
+                else
+                {
+                    m_is_internet=false;
+                    main_debug_print("internet is not ok!\r\n");
+                }
+#endif // CONFIG_MOBILE_INTERNET_DETECT
             }
             else
             {
                 //已断网
-
+                m_is_netif_ok=false;
             }
+        }
+        if (LUAT_MOBILE_EVENT_TIME_SYNC == event)
+        {
+            m_is_time_sync_ok=true;
         }
 
     }
@@ -204,7 +229,6 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
             {
             case LUAT_MOBILE_NETIF_LINK_ON:
                 main_debug_print("net up\r\n");
-                m_is_netif_ok=true;
                 if (luat_mobile_get_apn(0, 0, apn, sizeof(apn)))
                 {
                     main_debug_print("default apn %s\r\n", apn);
@@ -221,13 +245,11 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
                 break;
             default:
                 main_debug_print("net down\r\n");
-                m_is_netif_ok=false;
                 break;
             }
             break;
         case LUAT_MOBILE_EVENT_TIME_SYNC:
             main_debug_print("LUAT_MOBILE_EVENT_TIME_SYNC\r\n");
-            m_is_time_sync_ok=true;
             break;
         case LUAT_MOBILE_EVENT_CSCON:
             main_debug_print("LUAT_MOBILE_EVENT_CSCON:%d\r\n", status);
@@ -332,6 +354,11 @@ bool mobile_is_time_sync_ok()
 bool mobile_is_netif_ok()
 {
     return g_mobile.mobile_is_netif_ok();
+}
+
+bool mobile_is_internet()
+{
+    return g_mobile.mobile_is_internet();
 }
 
 uint32_t mobile_install_hook(uint32_t priority,void *hook_usr,bool (*hook)(void *,void *),void (*onfree)(void *))

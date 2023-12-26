@@ -11,7 +11,7 @@
     本文件主要将uart0作为APP日志输出口,而不是作为C-SDK日志输出。
 */
 #define LOG_BAUD 115200
-static uint8_t Tx_Buff[2048]= {0};
+static uint8_t Tx_Buff[8192]= {0};
 static int32_t uart0_rx_callback(void *pData, void *pParam)
 {
     uint32_t uartid = (uint32_t)pData;

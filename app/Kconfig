@@ -2,3 +2,19 @@
 config UART_APP_DEBUG
     bool "uart app debug(uart0)"
     default y
+
+menu "mobile"
+
+config MOBILE_INTERNET_DETECT
+    bool "mobile internet detect"
+    default y
+
+if  MOBILE_INTERNET_DETECT
+
+config MOBILE_INTERNET_DETECT_URL
+    string "mobile internet detect url(only support http)"
+    default "http://example.com/index.html"
+
+endif
+
+endmenu

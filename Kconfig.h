@@ -18,6 +18,9 @@
 #define CONFIG_UART_APP_DEBUG 1
 #endif // CONFIG_UART_APP_DEBUG
 
+//#define CONFIG_MOBILE_INTERNET_DETECT 1
+
+
 #endif // USE_KCONFIG
 
 #endif // __KCONFIG_H_INCLUDED__

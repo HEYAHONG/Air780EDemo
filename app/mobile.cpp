@@ -159,7 +159,7 @@ void mobile::process_callback(luat_mobile_event_callback_data_t &data)
         case LUAT_MOBILE_EVENT_SIM:
             if (status != LUAT_MOBILE_SIM_NUMBER)
             {
-                main_debug_print("LUAT_MOBILE_EVENT_SIM:%d", index);
+                main_debug_print("LUAT_MOBILE_EVENT_SIM:%d\r\n", index);
             }
             switch(status)
             {

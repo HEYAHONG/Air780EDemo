@@ -51,6 +51,7 @@ extern "C"
 #include "luat_wdt.h"
 #include "luat_wifiscan.h"
 
+
 void main_task(void *param);
 
 void main_task_sleep(uint32_t timeout_ms);

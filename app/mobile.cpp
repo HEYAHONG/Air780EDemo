@@ -89,10 +89,30 @@ public:
 luat_rtos_task_handle mobile::m_task_handle=NULL;
 luat_rtos_mutex_t mobile::m_lock=NULL;
 
+extern "C" void luat_socket_check_ready(uint32_t param, uint8_t *is_ipv6);
 void mobile::process_callback(luat_mobile_event_callback_data_t &data)
 {
     //此处处理事件(注意:开机时的事件可能会丢失)
     main_debug_print("mobile_event:%d,%d,%d\r\n",(int)data.event,(int)data.index,(int)data.status);
+    {
+        LUAT_MOBILE_EVENT event=data.event;
+        uint8_t index=data.index;
+        uint8_t status=data.status;
+        if (LUAT_MOBILE_EVENT_NETIF == event)
+        {
+            if (LUAT_MOBILE_NETIF_LINK_ON == status)
+            {
+                //已联网
+                luat_socket_check_ready(index, NULL);
+            }
+            else
+            {
+                //已断网
+
+            }
+        }
+
+    }
     if(!heventchain_start(event_chain,&data))
     {
         LUAT_MOBILE_EVENT event=data.event;

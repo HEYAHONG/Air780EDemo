@@ -5,6 +5,7 @@
 #include "task.h"
 #include "main.h"
 #include "led.h"
+#include "watchdog.h"
 
 
 
@@ -102,6 +103,30 @@ void main_unregister_mainloop_slot(uint32_t id)
 
 static luat_rtos_task_handle main_task_handle;
 
+static bool main_memory_check(hwatchdog_watch_info_t* info)
+{
+    (void)info;
+    {
+        size_t total=0,used=0,max_used=0;
+        static bool is_memory_low=false;
+        main_meminfo(&total,&used,&max_used);
+        if(total-used < 10*1024)
+        {
+            if(!is_memory_low)
+            {
+                main_debug_print("memory is low!\r\n");
+            }
+            is_memory_low=true;
+            return false;
+        }
+        else
+        {
+            is_memory_low=false;
+        }
+    }
+    return true;
+}
+
 /*
 在任务中处理的操作
 */
@@ -154,6 +179,12 @@ static void main_init_in_task(void*usr,heventloop_t*loop)
                 (*p)();
             }
         }
+    }
+
+    {
+        //通过看门狗检查内存大小
+        HWATCHDOG_ADD_WATCH(main_memory_check,30000,NULL);
+        main_debug_print("memory watchdog init!\r\n");
     }
 
 }

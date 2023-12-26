@@ -5,6 +5,7 @@
 #include <json/value.h>
 #include <json/reader.h>
 #include <json/writer.h>
+#include "watchdog.h"
 
 static void displaymeminfo()
 {
@@ -70,6 +71,7 @@ void main_task(void *param)
         }
 
         displaymeminfo();
+
     },NULL);
 
     uint32_t main_loop_print_tick_ms=main_task_gettick_ms();

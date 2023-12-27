@@ -57,7 +57,7 @@ void main_meminfo(size_t *total,size_t *used,size_t *max_used)
 
 const char *main_get_imei()
 {
-    static char imei[20]= {0};
+    static char imei[32]= {0};
     if(strlen(imei) < 10)
     {
         luat_mobile_get_imei(0, imei, sizeof(imei));

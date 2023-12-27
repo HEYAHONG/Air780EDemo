@@ -17,11 +17,17 @@ target(TARGET_NAME)
     then
        add_defines("USE_KCONFIG")        
     end
-        
+    
+    add_cxxflags("-frtti",{force=true})
+            
     --加入代码和头文件
     add_includedirs("./",{public = true})
+    add_includedirs("./appstack",{public = true})
     add_files("./*.c",{public = true})
     add_files("./*.cpp",{public = true})
+    --add_files("./appstack/*.c",{public = true})
+    add_files("./appstack/*.cpp",{public = true})
+
 
     --添加cJSON
     add_includedirs(SDK_TOP .. "/thirdparty/cJSON")

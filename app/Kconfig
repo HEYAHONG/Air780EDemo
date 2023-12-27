@@ -18,3 +18,33 @@ config MOBILE_INTERNET_DETECT_URL
 endif
 
 endmenu
+
+menu "MQTT"
+
+choice MQTT_STACK
+    bool "Choose MQTT Stack"
+    default  MQTT_STACK_HELLO
+
+config MQTT_STACK_HELLO
+    bool "Hello"
+
+endchoice
+
+if MQTT_STACK_HELLO
+
+config MQTT_STACK_HELLO_HOST
+    string "hostname"
+    default "lbsmqtt.airm2m.com"
+
+config MQTT_STACK_HELLO_PORT
+    int "port"
+    default 1884
+
+
+config MQTT_STACK_HELLO_SSL
+    bool "SSL"
+    default n
+
+endif
+
+endmenu

@@ -9,8 +9,8 @@
 */
 static class mobile
 {
-    static luat_rtos_task_handle m_task_handle;
-    static luat_rtos_mutex_t m_lock;
+    luat_rtos_task_handle m_task_handle;
+    luat_rtos_mutex_t m_lock;
     void lock()
     {
         luat_rtos_mutex_lock(m_lock,LUAT_WAIT_FOREVER);
@@ -35,7 +35,7 @@ public:
             ((mobile*)param)->run();
         }
     }
-    mobile():loop(NULL),event_chain(NULL),m_is_time_sync_ok(false),m_is_netif_ok(false),m_is_internet(false)
+    mobile():m_task_handle(NULL),m_lock(NULL),loop(NULL),event_chain(NULL),m_is_time_sync_ok(false),m_is_netif_ok(false),m_is_internet(false)
     {
         loop=heventloop_new(this);
         luat_rtos_mutex_create(&m_lock);
@@ -93,8 +93,6 @@ public:
 
 } g_mobile;
 
-luat_rtos_task_handle mobile::m_task_handle=NULL;
-luat_rtos_mutex_t mobile::m_lock=NULL;
 
 extern "C" void luat_socket_check_ready(uint32_t param, uint8_t *is_ipv6);
 void mobile::process_callback(luat_mobile_event_callback_data_t &data)

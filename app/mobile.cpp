@@ -13,10 +13,18 @@ static class mobile
     luat_rtos_mutex_t m_lock;
     void lock()
     {
+        if(m_lock==NULL)
+        {
+            return;
+        }
         luat_rtos_mutex_lock(m_lock,LUAT_WAIT_FOREVER);
     }
     void unlock()
     {
+        if(m_lock==NULL)
+        {
+            return;
+        }
         luat_rtos_mutex_unlock(m_lock);
     }
     heventloop_t *loop;
@@ -37,25 +45,7 @@ public:
     }
     mobile():m_task_handle(NULL),m_lock(NULL),loop(NULL),event_chain(NULL),m_is_time_sync_ok(false),m_is_netif_ok(false),m_is_internet(false)
     {
-        loop=heventloop_new(this);
         luat_rtos_mutex_create(&m_lock);
-        event_chain=heventchain_new_with_lock(this,[](void * usr)
-        {
-            if(usr != NULL)
-            {
-                mobile * m_mobile=(mobile *)usr;
-                m_mobile->lock();
-            }
-        },
-        [](void * usr)
-        {
-            if(usr != NULL)
-            {
-                mobile * m_mobile=(mobile *)usr;
-                m_mobile->unlock();
-            }
-        }
-                                             );
         luat_rtos_task_create(&m_task_handle,8192,10,"mobile",task_entry,this,16);
     }
     mobile(mobile &oths) = delete;
@@ -66,6 +56,10 @@ public:
     }
     bool add_event(void *event_usr,void(*event_process)(void *,heventloop_t *),void(*event_onfree)(void *,heventloop_t *))
     {
+        if(loop==NULL)
+        {
+            loop=heventloop_new(this);
+        }
         return heventloop_add_event_ex1(loop,event_usr,event_process,event_onfree);
     }
     bool mobile_is_time_sync_ok()
@@ -83,6 +77,26 @@ public:
 
     uint32_t mobile_install_hook(uint32_t priority,void *hook_usr,bool (*hook)(void *,void *),void (*onfree)(void *))
     {
+        if(event_chain == NULL)
+        {
+            event_chain=heventchain_new_with_lock(this,[](void * usr)
+            {
+                if(usr != NULL)
+                {
+                    mobile * m_mobile=(mobile *)usr;
+                    m_mobile->lock();
+                }
+            },
+            [](void * usr)
+            {
+                if(usr != NULL)
+                {
+                    mobile * m_mobile=(mobile *)usr;
+                    m_mobile->unlock();
+                }
+            }
+                                                 );
+        }
         return heventchain_install_hook(event_chain,priority,hook_usr,hook,onfree);
     }
 

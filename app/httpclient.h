@@ -196,7 +196,7 @@ public:
         }
         return -1;
     }
-    void destory()
+    void destroy()
     {
         if(client!=NULL)
         {
@@ -212,7 +212,7 @@ public:
     const httpclient &operator =(const httpclient &oths)=delete;
     virtual ~httpclient()
     {
-        destory();
+        destroy();
     }
 };
 

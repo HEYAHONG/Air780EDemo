@@ -6,7 +6,7 @@
 */
 
 
-//#if CONFIG_MQTT_STACK_HELLO
+#if CONFIG_MQTT_STACK_HELLO
 
 //默认目标地址
 #define DEFAULT_DEST_ADDR "Air780E_Hello"
@@ -114,4 +114,4 @@ public:
 };
 static mqtthello g_mqtthello;
 
-//#endif // CONFIG_MQTT_STACK_HELLO
+#endif // CONFIG_MQTT_STACK_HELLO

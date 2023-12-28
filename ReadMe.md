@@ -71,6 +71,20 @@ kconfig工具采用python软件包kconfiglib,通过pyinstaller打包而来,主�
 
 状态灯占用GPIO27，在开发板上为NET_STATUS灯。
 
+# 测试截图
+
+## MQTT
+
+### 简易测试
+
+![MQTT_Hello_MQTTX](doc/image/MQTT_Hello_MQTTX.PNG)
+
+![MQTT_Hello_SerialPort_1](doc/image/MQTT_Hello_SerialPort_1.PNG)
+
+![MQTT_Hello_SerialPort_2](doc/image/MQTT_Hello_SerialPort_2.PNG)
+
+![MQTT_Hello_Luatools](doc/image/MQTT_Hello_Luatools.PNG)
+
 # 编译
 
 - 操作系统: Windows  10及更新版本

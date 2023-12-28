@@ -321,7 +321,7 @@ void mobile::run()
             if(info!=NULL && info->usr !=NULL)
             {
                 uint32_t loop_start_tick=*(uint32_t *)info->usr;
-                if(main_task_gettick_ms()-loop_start_tick > 120000)//检查是否超时
+                if(main_task_gettick_ms()-loop_start_tick > (CONFIG_MOBILE_WATCHDOG_TIMEOUT * 1000))//检查是否超时
                 {
                     main_debug_print("mobile watchdog reset!\r\n");
                     return false;

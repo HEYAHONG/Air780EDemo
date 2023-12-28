@@ -58,7 +58,7 @@ static void main_init_in_task(void*usr,heventloop_t*loop)
     (void)usr;
     (void)loop;
     main_debug_print("init watchdog!\r\n");
-    luat_wdt_set_timeout(3);
+    luat_wdt_set_timeout(CONFIG_WATCHDOG_TIMEOUT);
 }
 
 static void watchdog_init(void)

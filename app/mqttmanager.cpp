@@ -100,7 +100,7 @@ void mqttmanager::run()
             if(info!=NULL && info->usr !=NULL)
             {
                 uint32_t loop_start_tick=*(uint32_t *)info->usr;
-                if(main_task_gettick_ms()-loop_start_tick > 300000)//检查是否超时
+                if(main_task_gettick_ms()-loop_start_tick > (CONFIG_MQTT_WATCHDOG_TIMEOUT * 1000))//检查是否超时
                 {
                     main_debug_print("mqttmanager watchdog reset!\r\n");
                     return false;

@@ -1,9 +1,27 @@
 
+menu "log"
+
 config UART_APP_DEBUG
     bool "uart app debug(uart0)"
     default y
 
+endmenu
+
+menu "watchdog"
+
+config WATCHDOG_TIMEOUT
+    int "watchdog timeout(s)"
+    default 5
+    range 1 60
+
+endmenu
+
 menu "mobile"
+
+config MOBILE_WATCHDOG_TIMEOUT
+    int "mobile watchdog timeout(s)"
+    default 120
+    range 30 6000000 
 
 config MOBILE_INTERNET_DETECT
     bool "mobile internet detect"
@@ -20,6 +38,12 @@ endif
 endmenu
 
 menu "MQTT"
+
+config MQTT_WATCHDOG_TIMEOUT
+    int "mqtt watchdog timeout(s)"
+    default 300
+    range 30 6000000
+
 
 choice MQTT_STACK
     bool "Choose MQTT Stack"

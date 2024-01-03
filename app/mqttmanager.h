@@ -169,12 +169,21 @@ public:
                         opts->ca=std::string(rc);
                     }
                 }
-                c_opts.server_cert = opts->ca.c_str();
-                c_opts.server_cert_len = opts->ca.length();
-                c_opts.client_cert = opts->cert.c_str();
-                c_opts.client_cert_len = opts->cert.length();
-                c_opts.client_key = opts->key.c_str();
-                c_opts.client_key_len = opts->key.length();
+                if(!opts->ca.empty())
+                {
+                    c_opts.server_cert = opts->ca.c_str();
+                    c_opts.server_cert_len = opts->ca.length();
+                }
+                if(!opts->cert.empty())
+                {
+                    c_opts.client_cert = opts->cert.c_str();
+                    c_opts.client_cert_len = opts->cert.length();
+                }
+                if(!opts->key.empty())
+                {
+                    c_opts.client_key = opts->key.c_str();
+                    c_opts.client_key_len = opts->key.length();
+                }
             }
 
             if(opts->port == 0)

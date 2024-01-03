@@ -65,6 +65,20 @@ const char *main_get_imei()
     return imei;
 }
 
+/*
+    移植gettimeofday,可使chrono库中的system_clock有效。
+*/
+int  gettimeofday(struct timeval *__restrict__ tv,void *__restrict__  tz/* tzp (unused) */)
+{
+    (void)tz;
+    if(tv != NULL)
+    {
+        tv->tv_sec=time(NULL);
+        tv->tv_usec=0;
+    }
+    return 0;
+}
+
 static heventloop_t *main_loop=NULL;
 heventloop_t *main_get_eventloop()
 {

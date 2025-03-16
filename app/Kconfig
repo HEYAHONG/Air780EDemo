@@ -11,8 +11,8 @@ menu "watchdog"
 
 config WATCHDOG_TIMEOUT
     int "watchdog timeout(s)"
-    default 5
-    range 1 60
+    default 60
+    range 20 60
 
 endmenu
 
